@@ -14,6 +14,7 @@ use AcMarche\Bottin\Repository\BottinRepository; //import class that returns an 
 
 function ca_all($parameter)
 {
+
     $catParent = null;
     if (isset($parameter['catParent'])) {
         $catParent = $parameter['catParent'];
@@ -50,13 +51,14 @@ function ca_all($parameter)
     }
 
     //retrieves all posts and add the wp category ids to them
-    $posts =  get_posts(['categories' => $idsWp]);
+    $query = new WP_Query(['category__in' => $idsWp]);
+    $posts =  $query->get_posts();
     foreach ($posts as $post) {
         $post->react_category_filter = wp_get_post_categories($post->ID);
     }
 
     //combines formatted fiches (data) and posts
-    $all = array_merge($data, $posts); //NOT WORKING ATM NEEDS TO BE CALLED FROM CATEGORY.PHP >< REST.INIT
+    $all = array_merge($data, $posts);
 
     // returns all posts and fiches with their respective wp category 
     return rest_ensure_response($all);
@@ -74,8 +76,8 @@ function wp_fiches_categories_id($catParent)
     $args     = ['parent' => $catParent, 'hide_empty' => false];
     $children_cat = get_categories($args);
 
+    $ids['wp'][] = $catParent; //adds the main category to the list of ids
     foreach ($children_cat as $cat) {
-        $ids['wp'][] = $catParent; //adds the main category to the list of ids
         $ids['wp'][] = $cat->cat_ID; //adds the children from main category to the list of ids
         $categoryBottinId = get_term_meta($cat->cat_ID, \BottinCategoryMetaBox::KEY_NAME, true); //checks if meta bottinID metadata contains and ID
         if ($categoryBottinId) {
