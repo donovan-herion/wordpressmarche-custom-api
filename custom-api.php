@@ -41,7 +41,7 @@ function ca_all($parameter)
             $i++;
         }
     }
-
+    $data = [];
     // Formats all fiches to fit front end requirements
     foreach ($fiches as $fiche) {
         $data[$fiche->id]['ID'] = $fiche->id;
