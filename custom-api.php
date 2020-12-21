@@ -11,6 +11,12 @@
 // The posts and fiches have a common react_category_filter property used in React for filtering purposes
 
 use AcMarche\Bottin\Repository\BottinRepository; //import class that returns an array of fiches based on id
+use AcMarche\Bottin\Bottin;
+use AcMarche\Theme\Inc\Router;
+use AcMarche\Pivot\Repository\HadesRepository;
+
+
+
 
 function ca_all($parameter)
 {
@@ -46,8 +52,9 @@ function ca_all($parameter)
     foreach ($fiches as $fiche) {
         $data[$fiche->id]['ID'] = $fiche->id;
         $data[$fiche->id]['post_title'] = $fiche->societe;
-        $data[$fiche->id]['link'] = 'https://new.marche.be/zezez' . $fiche->id;
         $data[$fiche->id]['react_category_filter'] = $fiche->react_category_filter;
+        $data[$fiche->id]['excerpt']    = Bottin::getExcerpt($fiche);
+        $data[$fiche->id]['link']  = Router::getUrlFicheBottin($fiche);
     }
 
     //retrieves all posts and add the wp category ids to them
@@ -98,6 +105,22 @@ add_action('rest_api_init', function () {
     register_rest_route('ca/v1', 'all/(?P<catParent>.*+)', [
         'methods' => 'GET',
         'callback' => 'ca_all',
+
+    ]);
+});
+
+
+function ca_events()
+{
+    $hadesRepository = new HadesRepository();
+    $events          = $hadesRepository->getEvents();
+    return rest_ensure_response($events);
+}
+
+add_action('rest_api_init', function () {
+    register_rest_route('ca/v1', 'events', [
+        'methods' => 'GET',
+        'callback' => 'ca_events',
 
     ]);
 });
