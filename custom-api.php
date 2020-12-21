@@ -86,8 +86,8 @@ function wp_fiches_categories_id($catParent)
     $ids['wp'][] = $catParent; //adds the main category to the list of ids
     foreach ($children_cat as $cat) {
         $ids['wp'][] = $cat->cat_ID; //adds the children from main category to the list of ids
-        $categoryBottinId = get_term_meta($cat->cat_ID, \BottinCategoryMetaBox::KEY_NAME, true); //checks if meta bottinID metadata contains and ID
-        if ($categoryBottinId) {
+        $categoryBottinId = get_term_meta($cat->cat_ID, \BottinCategoryMetaBox::KEY_NAME, true); //checks if meta bottinID metadata contains and 
+        if ($categoryBottinId) {ID
             $ids['bottin'][] = $categoryBottinId;
             $ids['association_bottin_wp'][] = $cat->cat_ID;
         }
@@ -100,15 +100,15 @@ function wp_fiches_categories_id($catParent)
 
     return $ids; //wp/bottin/association_wp_bottin ids
 }
+if (!is_admin()) {
+    add_action('rest_api_init', function () {
+        register_rest_route('ca/v1', 'all/(?P<catParent>.*+)', [
+            'methods' => 'GET',
+            'callback' => 'ca_all',
 
-add_action('rest_api_init', function () {
-    register_rest_route('ca/v1', 'all/(?P<catParent>.*+)', [
-        'methods' => 'GET',
-        'callback' => 'ca_all',
-
-    ]);
-});
-
+        ]);
+    });
+}
 // This plugin also adds a custom endpoint that returns all events from HADES
 function ca_events()
 {
@@ -117,10 +117,12 @@ function ca_events()
     return rest_ensure_response($events);
 }
 
-add_action('rest_api_init', function () {
-    register_rest_route('ca/v1', 'events', [
-        'methods' => 'GET',
-        'callback' => 'ca_events',
+if (!is_admin()) {
+    add_action('rest_api_init', function () {
+        register_rest_route('ca/v1', 'events', [
+            'methods' => 'GET',
+            'callback' => 'ca_events',
 
-    ]);
-});
+        ]);
+    });
+}
