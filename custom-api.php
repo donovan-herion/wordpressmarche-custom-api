@@ -109,7 +109,7 @@ add_action('rest_api_init', function () {
     ]);
 });
 
-
+// This plugin also adds a custom endpoint that returns all events from HADES
 function ca_events()
 {
     $hadesRepository = new HadesRepository();
