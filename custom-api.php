@@ -86,8 +86,8 @@ function wp_fiches_categories_id($catParent)
     $ids['wp'][] = $catParent; //adds the main category to the list of ids
     foreach ($children_cat as $cat) {
         $ids['wp'][] = $cat->cat_ID; //adds the children from main category to the list of ids
-        $categoryBottinId = get_term_meta($cat->cat_ID, \BottinCategoryMetaBox::KEY_NAME, true); //checks if meta bottinID metadata contains and 
-        if ($categoryBottinId) {ID
+        $categoryBottinId = get_term_meta($cat->cat_ID, \BottinCategoryMetaBox::KEY_NAME, true); //checks if meta bottinID metadata contains and ID
+        if ($categoryBottinId) {
             $ids['bottin'][] = $categoryBottinId;
             $ids['association_bottin_wp'][] = $cat->cat_ID;
         }
