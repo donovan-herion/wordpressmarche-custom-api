@@ -126,3 +126,22 @@ if (!is_admin()) {
         ]);
     });
 }
+
+// This plugin also adds a custom endpoint that returns all sheets of the bottin based on their id
+function ca_bottin($parameter)
+{
+    $bottinRepository = new BottinRepository();
+    $fiches           = $bottinRepository->getFicheById($parameter['ficheId']);
+
+    return rest_ensure_response($fiches);
+}
+
+if (!is_admin()) {
+    add_action('rest_api_init', function () {
+        register_rest_route('ca/v1', 'bottin/(?P<ficheId>.*+)', [
+            'methods' => 'GET',
+            'callback' => 'ca_bottin',
+
+        ]);
+    });
+}
