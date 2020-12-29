@@ -127,6 +127,35 @@ if (!is_admin()) {
     });
 }
 
+// This plugin returns the societe and the id of all companies in the bottin to retrieve them in the gutenberg block
+function ca_bottinSocieteId()
+{
+    $bottinRepository = new BottinRepository();
+    $allfiches           = $bottinRepository->getFiches();
+    $fichesSocieteId = [];
+
+    foreach ($allfiches as $fiche) {
+        $fichesSociete = $fiche['societe'];
+        $fichesId      = $fiche['id'];
+
+        $formattedFiche['societe'] = $fichesSociete;
+        $formattedFiche['id'] = $fichesId;
+
+        $fichesSocieteId[] = $formattedFiche;
+    }
+
+    return rest_ensure_response($fichesSocieteId);
+}
+
+
+add_action('rest_api_init', function () {
+    register_rest_route('ca/v1', 'bottinsocieteid', [
+        'methods' => 'GET',
+        'callback' => 'ca_bottinSocieteId',
+
+    ]);
+});
+
 // This plugin also adds a custom endpoint that returns all sheets of the bottin based on their id
 function ca_bottin($parameter)
 {
