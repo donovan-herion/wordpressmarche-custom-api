@@ -136,12 +136,11 @@ function ca_bottin($parameter)
     return rest_ensure_response($fiches);
 }
 
-if (!is_admin()) {
-    add_action('rest_api_init', function () {
-        register_rest_route('ca/v1', 'bottin/(?P<ficheId>.*+)', [
-            'methods' => 'GET',
-            'callback' => 'ca_bottin',
 
-        ]);
-    });
-}
+add_action('rest_api_init', function () {
+    register_rest_route('ca/v1', 'bottin/(?P<ficheId>.*+)', [
+        'methods' => 'GET',
+        'callback' => 'ca_bottin',
+
+    ]);
+});
