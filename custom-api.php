@@ -173,3 +173,40 @@ add_action('rest_api_init', function () {
 
     ]);
 });
+
+// This plugin also adds a custom endpoint that returns all categories of the bottin
+function ca_bottinAllCategories()
+{
+    $bottinRepository = new BottinRepository();
+    $allCategories    = $bottinRepository->getAllCategories();
+
+    return rest_ensure_response($allCategories);
+}
+
+
+add_action('rest_api_init', function () {
+    register_rest_route('ca/v1', 'bottinAllCategories', [
+        'methods' => 'GET',
+        'callback' => 'ca_bottinAllCategories',
+
+    ]);
+});
+
+
+// This plugin also returns a data object that is used for the dynamic map
+function ca_map($parameter)
+{
+    $bottinRepository = new BottinRepository();
+    $fiches           = $bottinRepository->getFichesByCategories([$parameter["CatId"]]);
+
+    return rest_ensure_response($fiches);
+}
+
+
+add_action('rest_api_init', function () {
+    register_rest_route('ca/v1', 'map/(?P<CatId>.*+)', [
+        'methods' => 'GET',
+        'callback' => 'ca_map',
+
+    ]);
+});
